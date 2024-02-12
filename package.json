@@ -1,0 +1,14 @@
+{
+  "name": "pokerdex_ts",
+  "version": "1.0.0",
+  "description": "pokedex para se divertir",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^5.3.3"
+  }
+}
