@@ -1,7 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const getPokemon_1 = require("./Gets_Pokemon/getPokemon");
+const getPokemon_2 = require("./Gets_Pokemon/getPokemon");
 const URL_POKE = "https://pokeapi.co/api/v2/pokemon/";
 const URL_COLOR = "https://pokeapi.co/api/v2/pokemon-color/";
-(0, getPokemon_1.getPokemonColors)(URL_COLOR);
-// getPokemonNameFind(URL_POKE,'onix')
+const URL_LOCALIZATION = "https://pokeapi.co/api/v2/location/";
+(0, getPokemon_1.getPokemonColors)(URL_COLOR, getPokemon_2.PokeClass);
+(0, getPokemon_1.getPokemonNameFind)(URL_POKE, getPokemon_2.PokeClass, 'onix');
+(0, getPokemon_1.findPokeLocalization)(URL_LOCALIZATION);
+// getLocalization(URL_LOCALIZATION,'onix', PokeClass);

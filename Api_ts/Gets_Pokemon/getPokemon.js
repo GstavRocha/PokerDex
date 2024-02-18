@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPokemonColors = exports.getPokemonNameFind = exports.getPokeNameAndUrlAll = void 0;
+exports.findPokeLocalization = exports.getPokemonColors = exports.getPokemonNameFind = exports.getPokeNameAndUrlAll = exports.PokeClass = void 0;
 const axios_1 = __importDefault(require("axios"));
 const Pokemon_1 = require("../Models/Pokemon");
 let pokeId = 0;
@@ -21,12 +21,7 @@ let pokeColor = 'white';
 let pokeUrl = '';
 let pokeTipe = '';
 let pokeLocal = '';
-const PokeClass = new Pokemon_1.Pokemon(pokeId, pokeName, pokeColor, pokeUrl, pokeTipe, pokeLocal);
-pokeId = PokeClass.id;
-pokeName = PokeClass.name;
-pokeColor = PokeClass.getColor();
-PokeClass.url = pokeUrl;
-PokeClass.tipe = pokeTipe;
+exports.PokeClass = new Pokemon_1.Pokemon(pokeId, pokeName, pokeColor, pokeUrl, pokeTipe, pokeLocal);
 function getPokeNameAndUrlAll(link) {
     const treatmentLink = `${link}?offset=0&limit=100`;
     (0, axios_1.default)(treatmentLink)
@@ -49,14 +44,20 @@ function getPokeNameAndUrlAll(link) {
     });
 }
 exports.getPokeNameAndUrlAll = getPokeNameAndUrlAll;
-function getPokemonNameFind(link, name) {
+function getPokemonNameFind(link, pokeInstance, name) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let linkTreatment = `${link}${name}`;
             const resp = yield (0, axios_1.default)(linkTreatment);
-            let pokeName = resp.data.forms[0];
+            let nameIs = resp.data.forms[0].name;
+            let urlIs = resp.data.forms[0].url;
             if (resp.status === 200) {
-                return pokeName;
+                let nomeUrl = {
+                    name: nameIs,
+                    url: urlIs
+                };
+                pokeInstance.setName(nomeUrl.name);
+                pokeInstance.setUrl(nomeUrl.url);
             }
         }
         catch (erro) {
@@ -65,24 +66,14 @@ function getPokemonNameFind(link, name) {
     });
 }
 exports.getPokemonNameFind = getPokemonNameFind;
-function getPokemonColors(link) {
+function getPokemonColors(link, pokeInstance) {
     return __awaiter(this, void 0, void 0, function* () {
         axios_1.default.get(link)
             .then((resp) => {
             try {
-                let colorsStyle = resp.data;
-                if (colorsStyle.next !== null && colorsStyle.previous !== null) {
-                    colorsStyle.results.map((cores) => {
-                        PokeClass.setColor(cores.name);
-                        console.log('entro', true);
-                        console.log(PokeClass.getColor());
-                        return cores.name;
-                    });
-                }
-                else {
-                    console.log('não entro', false);
-                    console.log('teste');
-                }
+                resp.data.results.forEach((cores) => {
+                    pokeInstance.setColor(cores.name);
+                });
             }
             catch (erro) {
                 console.error(erro, 'ERRO');
@@ -91,3 +82,19 @@ function getPokemonColors(link) {
     });
 }
 exports.getPokemonColors = getPokemonColors;
+function findPokeLocalization(link) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let linkTreatment = `${link}?offset=0&limit=100",`;
+            const resp = yield (0, axios_1.default)(linkTreatment);
+            console.log(resp.status);
+            return link;
+        }
+        catch (erro) {
+            console.error(erro, 'Deu Erro');
+        }
+    });
+}
+exports.findPokeLocalization = findPokeLocalization;
+// export async function getLocalization(link: String, name: string, pokeInstance: Pokemon ){
+// } 

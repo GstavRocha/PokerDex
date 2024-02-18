@@ -6,18 +6,13 @@ let pokeColor:Pokemon['color']= 'white';
 let pokeUrl:Pokemon['url']= ''
 let pokeTipe:Pokemon['tipe']= '';
 let pokeLocal:Pokemon['location_area']= '';
-const PokeClass = new Pokemon(
+export const PokeClass = new Pokemon(
     pokeId,
     pokeName,
     pokeColor,
     pokeUrl,
     pokeTipe,
     pokeLocal);
-pokeId = PokeClass.id;
-pokeName = PokeClass.name;
-pokeColor = PokeClass.getColor();
-PokeClass.url = pokeUrl;
-PokeClass.tipe = pokeTipe;
 
 export function getPokeNameAndUrlAll(link: string): any{
     const treatmentLink: string = `${link}?offset=0&limit=100`;
@@ -40,13 +35,20 @@ export function getPokeNameAndUrlAll(link: string): any{
 
         })
 }
-export async function getPokemonNameFind(link: string,name:string){
+export async function getPokemonNameFind(link: string,pokeInstance: Pokemon,name:string){
     try {
         let linkTreatment: string = `${link}${name}`;
         const resp = await axios(linkTreatment);
-        let pokeName = resp.data.forms[0]
+        let nameIs = resp.data.forms[0].name;
+        let urlIs = resp.data.forms[0].url;
         if(resp.status === 200){
-        return pokeName;
+            let nomeUrl:{name: any, url: any} = {
+                name: nameIs,
+                url: urlIs
+
+            }
+            pokeInstance.setName(nomeUrl.name)
+            pokeInstance.setUrl(nomeUrl.url)
         }
     }
     catch (erro){
@@ -54,25 +56,30 @@ export async function getPokemonNameFind(link: string,name:string){
     }
 
 }
-export async function getPokemonColors(link: string) {
+export async function getPokemonColors(link: string, pokeInstance: Pokemon) {
     axios.get(link)
         .then((resp) => {
             try {
-                let colorsStyle = resp.data;
-                if (colorsStyle.next !== null && colorsStyle.previous !== null) {
-                    colorsStyle.results.map((cores: any)=>{
-                        PokeClass.setColor(cores.name);
-                        console.log('entro', true)
-                        console.log(PokeClass.getColor())
-                        return cores.name;
-                    })
-                }else{
-                    console.log('não entro', false)
-                    console.log('teste')
-                }
+                 resp.data.results.forEach((cores: any)=>{
+                    pokeInstance.setColor(cores.name)
+                    }
+                )
             }
             catch (erro){
                 console.error(erro, 'ERRO')
             }
         })
 }
+export async function findPokeLocalization(link:string) {
+    try{
+        let linkTreatment:string =`${link}?offset=0&limit=100",`
+        const resp = await  axios(linkTreatment);
+        console.log(resp.status)
+        return link;
+    }catch(erro){
+        console.error(erro, 'Deu Erro')
+    }
+}
+// export async function getLocalization(link: String, name: string, pokeInstance: Pokemon ){
+
+// } 
