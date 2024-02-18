@@ -1,5 +1,23 @@
 import axios from "axios";
-
+import { Pokemon } from "../Models/Pokemon";
+let pokeId:Pokemon['id'] = 0;
+let pokeName:Pokemon['name'] = '';
+let pokeColor:Pokemon['color']= 'white';
+let pokeUrl:Pokemon['url']= ''
+let pokeTipe:Pokemon['tipe']= '';
+let pokeLocal:Pokemon['location_area']= '';
+const PokeClass = new Pokemon(
+    pokeId,
+    pokeName,
+    pokeColor,
+    pokeUrl,
+    pokeTipe,
+    pokeLocal);
+pokeId = PokeClass.id;
+pokeName = PokeClass.name;
+pokeColor = PokeClass.getColor();
+PokeClass.url = pokeUrl;
+PokeClass.tipe = pokeTipe;
 
 export function getPokeNameAndUrlAll(link: string): any{
     const treatmentLink: string = `${link}?offset=0&limit=100`;
@@ -41,13 +59,16 @@ export async function getPokemonColors(link: string) {
         .then((resp) => {
             try {
                 let colorsStyle = resp.data;
-                console.log(colorsStyle)
-                if (colorsStyle.next === null && colorsStyle.previous == null) {
+                if (colorsStyle.next !== null && colorsStyle.previous !== null) {
                     colorsStyle.results.map((cores: any)=>{
-                        return cores.name
+                        PokeClass.setColor(cores.name);
+                        console.log('entro', true)
+                        console.log(PokeClass.getColor())
+                        return cores.name;
                     })
                 }else{
-                    console.log('testes')
+                    console.log('não entro', false)
+                    console.log('teste')
                 }
             }
             catch (erro){
